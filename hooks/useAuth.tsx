@@ -6,7 +6,7 @@ interface authenticationType {
   confirmPassword?: string;
 }
 
-function useAuthentication(navigate: (screen: string) => void) {
+function useAuthentication(navigate: (path: any) => void) {
   const [formData, setFormData] = useState<authenticationType>({
     email: "",
     password: "",
@@ -59,7 +59,7 @@ function useAuthentication(navigate: (screen: string) => void) {
       }
       setSuccess("Sign up success");
       setTimeout(() => {
-        navigate("Home");
+        navigate("/(tabs)" as any);
       }, 1000);
     } catch (err: any) {
       console.error(err);
@@ -95,7 +95,7 @@ function useAuthentication(navigate: (screen: string) => void) {
       }
       setSuccess("Login successful");
       setTimeout(() => {
-        navigate("Home");
+        navigate("/(tabs)" as any);
       }, 1000);
     } catch (err: any) {
       console.error(err);
