@@ -1,3 +1,4 @@
+import { account, ID } from "@/lib/appwrite";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 interface authenticationType {
@@ -16,13 +17,20 @@ function useAuthentication(navigate: (path: any) => void) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const storeToken = async (token: string) => {
+  const storeSession = async (userId: string) => {
     try {
-      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("userId", userId);
     } catch (err) {
-      console.error("Failed to store token", err);
+      console.error("failed to store session", err);
     }
   };
+  //   const storeToken = async (token: string) => {
+  //     try {
+  //       await AsyncStorage.setItem("token", token);
+  //     } catch (err) {
+  //       console.error("Failed to store token", err);
+  //     }
+  //   };
 
   const signUp = async () => {
     setLoading(true);
@@ -43,20 +51,19 @@ function useAuthentication(navigate: (path: any) => void) {
       return;
     }
     try {
-      const res = await fetch("", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await account.create(
+        ID.unique(),
+        formData.email,
+        formData.password,
+        formData.email.split("@")[0]
+      );
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Can't sign up now!");
+      await account.createEmailPasswordSession(
+        formData.email,
+        formData.password
+      );
 
-      if (data.token) {
-        await storeToken(data.token);
-      }
+      await storeSession(res.$id);
       setSuccess("Sign up success");
       setTimeout(() => {
         navigate("/(tabs)" as any);
@@ -80,19 +87,11 @@ function useAuthentication(navigate: (path: any) => void) {
       return;
     }
     try {
-      const res = await fetch("", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Can't login now");
-      if (data.token) {
-        await storeToken(data.token);
-      }
+      const session = await account.createEmailPasswordSession(
+        formData.email,
+        formData.password
+      );
+      await storeSession(session.userId);
       setSuccess("Login successful");
       setTimeout(() => {
         navigate("/(tabs)" as any);
