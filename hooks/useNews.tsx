@@ -1,4 +1,4 @@
-import { database } from "@/lib/appwrite";
+import { account, database } from "@/lib/appwrite";
 import { useEffect, useState } from "react";
 import { Query } from "react-native-appwrite";
 
@@ -14,7 +14,7 @@ interface fetchNews {
   content: string;
 }
 
-function FetchNews() {
+function useNews() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [news, setNews] = useState<fetchNews[]>([]);
@@ -23,6 +23,8 @@ function FetchNews() {
     setLoading(true);
     setError("");
     try {
+      await account.get();
+      
       const res = await database.listDocuments("001", "news", [
         Query.orderDesc("publishedAt"),
         Query.limit(100),
@@ -40,4 +42,4 @@ function FetchNews() {
   }, []);
   return { loading, error, news, refetch: generalnews };
 }
-export default FetchNews;
+export default useNews;

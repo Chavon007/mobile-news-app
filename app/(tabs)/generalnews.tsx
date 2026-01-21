@@ -1,10 +1,58 @@
+import RenderNews from "@/component/newscard";
+import useNews from "@/hooks/useNews";
 import React from "react";
-import { Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 
 const Generalnews = () => {
+  const { loading, error, news, refetch } = useNews();
+
+  if (loading && news.length) {
+    return (
+      <View>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View>
+        <Text>{error}</Text>
+      </View>
+    );
+  }
+
   return (
-    <View className="flex-1 justify-center items-center">
-      <Text  className="text-blue-500 font-bold">This is the gerenal news page</Text>
+    <View>
+      <FlatList
+      data={news} keyExtractor={(item) => item.$id}
+        renderItem={({ item }) => (
+          <RenderNews
+            sourceName={item.sourceName}
+            author={item.author}
+            title={item.title}
+            description={item.description}
+            url={item.url}
+            urlToImage={item.urlToImage}
+            publishedAt={item.publishedAt}
+            content={item.content}
+          />
+        )}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        ListEmptyComponent={
+          <View>
+            <Text>No news available</Text>
+          </View>
+        }
+      />
     </View>
   );
 };
