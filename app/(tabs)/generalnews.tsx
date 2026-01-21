@@ -1,4 +1,4 @@
-import RenderNews from "@/component/newscard";
+import RenderNews from "@/components/newscard";
 import useNews from "@/hooks/useNews";
 import React from "react";
 import {
@@ -12,26 +12,28 @@ import {
 const Generalnews = () => {
   const { loading, error, news, refetch } = useNews();
 
-  if (loading && news.length) {
+  if (loading && news.length === 0) {
     return (
-      <View>
-        <ActivityIndicator />
+      <View className="flex-1 justify-center items-center bg-gray-100">
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text className="mt-4 text-gray-600">Loading news...</Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View>
-        <Text>{error}</Text>
+      <View className="flex-1 justify-center items-center bg-gray-100 p-4">
+        <Text className="text-red-500 text-center">{error}</Text>
       </View>
     );
   }
 
   return (
-    <View>
+    <View className="flex-1 bg-gray-100">
       <FlatList
-      data={news} keyExtractor={(item) => item.$id}
+        data={news}
+        keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <RenderNews
             sourceName={item.sourceName}
@@ -48,10 +50,11 @@ const Generalnews = () => {
           <RefreshControl refreshing={loading} onRefresh={refetch} />
         }
         ListEmptyComponent={
-          <View>
-            <Text>No news available</Text>
+          <View className="flex-1 justify-center items-center p-8">
+            <Text className="text-gray-500 text-lg">No news available</Text>
           </View>
         }
+        contentContainerStyle={{ paddingBottom: 20 }}
       />
     </View>
   );
