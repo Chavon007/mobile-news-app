@@ -44,22 +44,44 @@ function useNews() {
     setError("");
     try {
       const user = await account.get();
+      let categories: string[] = [];
+      try {
+        const categoryDoc = await database.getDocument(
+          "001",
+          "categories",
+          user.$id,
+        );
 
-      const categoryDoc = await database.getDocument(
-        "001",
-        "categories",
-        user.$id,
-      );
+        categories = categoryDoc.newsCategories as string[];
+      } catch (err) {
+        setError(
+          "Select at least one news category for your newsfeed. Go to setting to select a category",
+        );
+        setNews([]);
+        return;
+      }
 
-      const categories = categoryDoc.categories as string[];
+      if (!categories || categories.length === 0) {
+        setError(
+          "Select at least one news category for your newsfeed. Go to setting to select a category",
+        );
+        setNews([]);
+        return;
+      }
 
-      const res = await database.listDocuments("001", "news", [
-        Query.equal("category", categories),
-        Query.orderDesc("publishedAt"),
-        Query.limit(100),
-      ]);
+      let allNews: fetchNews[] = [];
 
-      setNews(res.documents as fetchNews[]);
+      for (const cat of categories) {
+        const res = await database.listDocuments("001", "news", [
+          Query.equal("category", cat),
+          Query.orderDesc("publishedAt"),
+          Query.limit(100),
+        ]);
+
+        allNews.push(...res.documents);
+      }
+
+      setNews(allNews);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch news");
       console.error("Error fetching news:", err);

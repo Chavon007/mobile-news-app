@@ -1,6 +1,6 @@
 import RenderNews from "@/components/newscard";
 import useNews from "@/hooks/useNews";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,6 +11,10 @@ import {
 
 const Generalnews = () => {
   const { loading, error, news, refetch } = useNews();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (loading && news.length === 0) {
     return (

@@ -3,23 +3,20 @@ import { useState } from "react";
 
 function useCategories() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
   const saveCategories = async () => {
+    setError("");
+    setSuccess("");
     try {
       const user = await account.get();
       const userId = user.$id;
 
-     
-      const res = await database.createDocument(
-        "001",         
-        "categories",   
-        userId,         
-        {
-          userId,
-          categories: selectedCategories,
-        }
-      );
-
+      const res = await database.createDocument("001", "categories", userId, {
+        userId,
+        newsCategories: selectedCategories,
+      });
+      setSuccess("Categories saved succesfully");
       console.log("Categories saved:", res);
       return res;
     } catch (err: any) {
@@ -27,16 +24,18 @@ function useCategories() {
       if (err.code === 409) {
         const user = await account.get();
 
-        return await database.updateDocument(
+        const res = await database.updateDocument(
           "001",
           "categories",
           user.$id,
           {
-            categories: selectedCategories,
-          }
+            newsCategories: selectedCategories,
+          },
         );
+        setSuccess("Categories updated successfully");
+        return res;
       }
-
+      setError("Can't save categories now");
       console.error("Failed to save categories:", err);
       throw err;
     }
@@ -46,6 +45,8 @@ function useCategories() {
     selectedCategories,
     setSelectedCategories,
     saveCategories,
+    success,
+    error,
   };
 }
 

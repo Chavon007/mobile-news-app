@@ -1,6 +1,6 @@
+import useCategories from "@/hooks/usePermission";
 import React from "react";
 import { Switch, Text, TouchableOpacity, View } from "react-native";
-import useCategories from "@/hooks/usePermission";
 
 const categories = [
   "business",
@@ -12,14 +12,19 @@ const categories = [
 ];
 
 const Settings = () => {
-  const { selectedCategories, setSelectedCategories, saveCategories } =
-    useCategories();
+  const {
+    selectedCategories,
+    setSelectedCategories,
+    success,
+    error,
+    saveCategories,
+  } = useCategories();
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   };
 
@@ -55,6 +60,14 @@ const Settings = () => {
           Save Settings
         </Text>
       </TouchableOpacity>
+      <View>
+        {success && (
+          <Text className="text-green-500 text-sm font-mono">{success}</Text>
+        )}
+        {error && (
+          <Text className="text-red-500 text-sm font-mono">{error}</Text>
+        )}
+      </View>
     </View>
   );
 };

@@ -69,9 +69,9 @@ function RenderNews({
           }}
         />
 
-        <View className="p-4">
+        <View className="p-4 ">
           <Text
-            className="text-xl font-bold text-gray-800 mb-2"
+            className="text-xl font-bold text-blue-900 mb-2"
             numberOfLines={4}
           >
             {title}
@@ -94,7 +94,7 @@ function RenderNews({
             </Text>
             <TouchableOpacity
               onPress={() => setmodalVisible(true)}
-              className="bg-blue-500 px-4 py-2 rounded-lg"
+              className="bg-blue-800 px-4 py-2 rounded-lg"
             >
               <Text className="text-white font-semibold">Read More</Text>
             </TouchableOpacity>
@@ -108,7 +108,7 @@ function RenderNews({
         animationType="slide"
       >
         <View className="flex-1 bg-white">
-          <View className="bg-blue-500 p-4 pt-12">
+          <View className="bg-blue-800 p-4 pt-12">
             <Text className="text-white text-xl font-bold" numberOfLines={4}>
               {title}
             </Text>
@@ -141,7 +141,7 @@ function RenderNews({
 
             <Pressable
               onPress={() => Linking.openURL(url)}
-              className="bg-blue-500 p-4 rounded-lg mb-4"
+              className="bg-blue-900 p-4 rounded-lg mb-4"
             >
               <Text className="text-white text-center font-bold">
                 Read Full Article
