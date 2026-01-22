@@ -1,102 +1,60 @@
-import React, { useState } from "react";
+import React from "react";
 import { Switch, Text, TouchableOpacity, View } from "react-native";
+import useCategories from "@/hooks/usePermission";
+
+const categories = [
+  "business",
+  "entertainment",
+  "health",
+  "science",
+  "sports",
+  "technology",
+];
 
 const Settings = () => {
-  const [businessEnabled, setBusinessEnabled] = useState(false);
-  const [entertanmentEnabled, setEntertanmentEnabled] = useState(false);
-  const [healthEnabled, setHealthEnabled] = useState(false);
-  const [scienceEnabled, setscienceEnabled] = useState(false);
-  const [sportEnabled, setSportEnabled] = useState(false);
-  const [technologyEnabled, setTechnologyEnabled] = useState(false);
+  const { selectedCategories, setSelectedCategories, saveCategories } =
+    useCategories();
+
+  const toggleCategory = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
   return (
-    <View className=" bg-[[#aaafb8]] flex-1 gap-8 p-2">
+    <View className="flex-1 gap-8 p-2 bg-[#aaafb8]">
       <View className="w-[98%] mx-auto px-2">
-        <Text className="text-base font-sans font-bold text-blue-900 my-3">
-          Select news categories to Display on your newsfeed
+        <Text className="text-base font-bold text-blue-900 my-3">
+          Select news categories to display on your newsfeed
         </Text>
-        <View className="flex-row items-center  justify-between p-1">
-          <Text className="p-2 text-gray-500 font-serif  font-bold text-2xl">
-            Business
-          </Text>
 
-          <Switch
-            className=""
-            value={businessEnabled}
-            onChange={() => setBusinessEnabled(!businessEnabled)}
-          />
-        </View>
+        {categories.map((category) => (
+          <View
+            key={category}
+            className="flex-row items-center justify-between p-1"
+          >
+            <Text className="p-2 text-gray-600 font-bold text-2xl capitalize">
+              {category}
+            </Text>
 
-        <View className="flex-row items-center  justify-between p-1">
-          <Text className="p-2 text-gray-500 font-serif  font-bold text-2xl">
-            Entertainment
-          </Text>
-          <Text>
             <Switch
-              value={entertanmentEnabled}
-              onChange={() => setEntertanmentEnabled(!entertanmentEnabled)}
+              value={selectedCategories.includes(category)}
+              onValueChange={() => toggleCategory(category)}
             />
-          </Text>
-        </View>
-
-        <View className="flex-row items-center  justify-between p-1">
-          <Text className="p-2 text-gray-500 font-serif  font-bold text-2xl">
-            Health
-          </Text>
-
-          <Text>
-            <Switch
-              value={healthEnabled}
-              onChange={() => setHealthEnabled(!healthEnabled)}
-            />
-          </Text>
-        </View>
-
-        <View className="flex-row items-center  justify-between p-1">
-          <Text className="p-2 text-gray-500 font-serif  font-bold text-2xl">
-            Science
-          </Text>
-
-          <Text>
-            <Switch
-              value={scienceEnabled}
-              onChange={() => setscienceEnabled(!scienceEnabled)}
-            />
-          </Text>
-        </View>
-
-        <View className="flex-row items-center  justify-between p-1">
-          <Text className="p-2 text-gray-500 font-serif  font-bold text-2xl">
-            Sports
-          </Text>
-
-          <Text>
-            <Switch
-              value={sportEnabled}
-              onChange={() => setSportEnabled(!sportEnabled)}
-            />
-          </Text>
-        </View>
-
-        <View className="flex-row items-center  justify-between p-1">
-          <Text className="p-2 text-gray-500 font-serif  font-bold text-2xl">
-            Technology
-          </Text>
-          <Text>
-            <Switch
-              value={technologyEnabled}
-              onChange={() => setTechnologyEnabled(!technologyEnabled)}
-            />
-          </Text>
-        </View>
+          </View>
+        ))}
       </View>
 
-      <View>
-        <TouchableOpacity className="mt-8 flex justify-center items-center bg-blue-800 w-[100px] rounded-xl p-2 mx-auto">
-          <Text className="text-center text-base text-serif text-blue-100 font-bold">
-            Logout
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={saveCategories}
+        className="mt-8 self-center bg-blue-800 w-[140px] rounded-xl p-3"
+      >
+        <Text className="text-center text-blue-100 font-bold">
+          Save Settings
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -1,5 +1,5 @@
 import { account, database } from "@/lib/appwrite";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Query } from "react-native-appwrite";
 
 interface fetchNews {
@@ -12,6 +12,7 @@ interface fetchNews {
   urlToImage: string;
   publishedAt: string;
   content: string;
+  category: string;
 }
 
 function useNews() {
@@ -24,7 +25,7 @@ function useNews() {
     setError("");
     try {
       await account.get();
-      
+
       const res = await database.listDocuments("001", "news", [
         Query.orderDesc("publishedAt"),
         Query.limit(100),
@@ -37,9 +38,35 @@ function useNews() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    generalnews();
-  }, []);
-  return { loading, error, news, refetch: generalnews };
+
+  const selectedNews = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const user = await account.get();
+
+      const categoryDoc = await database.getDocument(
+        "001",
+        "categories",
+        user.$id,
+      );
+
+      const categories = categoryDoc.categories as string[];
+
+      const res = await database.listDocuments("001", "news", [
+        Query.equal("category", categories),
+        Query.orderDesc("publishedAt"),
+        Query.limit(100),
+      ]);
+
+      setNews(res.documents as fetchNews[]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch news");
+      console.error("Error fetching news:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return { loading, error, news, refetch: generalnews, selectedNews };
 }
 export default useNews;
