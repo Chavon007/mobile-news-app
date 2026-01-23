@@ -5,7 +5,7 @@ function useCategories() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-  const saveCategories = async () => {
+  const saveCategories = async (onSuccess?: () => void ) => {
     setError("");
     setSuccess("");
     try {
@@ -18,6 +18,8 @@ function useCategories() {
       });
       setSuccess("Categories saved succesfully");
       console.log("Categories saved:", res);
+
+      if(onSuccess) onSuccess()
       return res;
     } catch (err: any) {
       // If document already exists → update instead

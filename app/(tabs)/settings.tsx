@@ -1,13 +1,14 @@
+import useNews from "@/hooks/useNews";
 import useCategories from "@/hooks/usePermission";
 import React from "react";
-import { Switch, Text, TouchableOpacity, View } from "react-native";
 
+import { Switch, Text, TouchableOpacity, View } from "react-native";
 const categories = [
   "business",
   "entertainment",
   "health",
   "science",
-  "sports",
+  "sport",
   "technology",
 ];
 
@@ -19,7 +20,7 @@ const Settings = () => {
     error,
     saveCategories,
   } = useCategories();
-
+  const { selectedNews } = useNews();
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -53,7 +54,7 @@ const Settings = () => {
       </View>
 
       <TouchableOpacity
-        onPress={saveCategories}
+        onPress={() => saveCategories(selectedNews)}
         className="mt-8 self-center bg-blue-800 w-[140px] rounded-xl p-3"
       >
         <Text className="text-center text-blue-100 font-bold">

@@ -1,6 +1,8 @@
 import RenderNews from "@/components/newscard";
 import useNews from "@/hooks/useNews";
 import React, { useEffect } from "react";
+
+
 import {
   ActivityIndicator,
   FlatList,
